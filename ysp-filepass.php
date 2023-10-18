@@ -129,7 +129,7 @@ class Revisions {
     }
 
     public function processRevision() {
-        if (!$this->webhookURL || !$this->revisionsPage || is_page($this->revisionsPage) === false) return;
+        if (!$this->webhookURL || !$this->revisionsPage || !is_page($this->revisionsPage)) return;
 
         if (!$this->strContains('filepass', $_SERVER['HTTP_REFERER']) || !isset($_SERVER['HTTP_REFERER'])) return;
 
@@ -140,17 +140,17 @@ class Revisions {
         $project = sanitize_text_field($_GET['project']);
         $filepass = sanitize_text_field($_GET['filepass']);
 
+        // Do you still want to sendRevisionRequest if there's an issue?
+        if (!$email || !$song || !$project || !$filepass) {
+            error_log('Filepass » Unexpected Values: ' . print_r($data, 1));
+        }
+
         $data = array(
             'email' => $email,
             'song' => $song,
             'project' => $project,
             'filepass' => $filepass,
         );
-
-        if (!$email || !$song || !$project || !$filepass) {
-            $newError = 'Filepass » Unexpected Values: ' . print_r($data, 1);
-            error_log($newError);
-        }
 
         $this->sendRevisionRequest($this->webhookURL, $data);
     }
@@ -171,13 +171,8 @@ class Revisions {
     private function strContains($needle, $haystack) {
         if (function_exists('str_contains')) {
             return str_contains($haystack, $needle);
-        } else {
-            if (stripos($haystack, $needle) === false) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+        } 
+        return stripos(haystack, $needle);
     }
 }
 
