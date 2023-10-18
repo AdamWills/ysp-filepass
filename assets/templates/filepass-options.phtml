@@ -1,0 +1,13 @@
+<div class="wrap">
+    <h1>Filepass Tool Options</h1>
+    <form method="post" action="options.php">
+        <label for="make_webhook_url">Filepass URL:</label>
+        <input type="text" id="make_webhook_url" name="make_webhook_url" value="<?php echo esc_attr($filepass_url); ?>" />
+        <p><small>Enter the Webhook URL.</small></p>
+        <label for="filepass_page_id">Select the page for Filepass</label>:
+        <?php
+        echo $pages;
+        submit_button();
+        ?>
+    </form>
+</div>
